@@ -129,8 +129,8 @@ struct SidebarTests {
         try Data("kaputt".utf8).write(to: list)                          // unlesbar: nichts anfassen
         #expect(run([name]) == nil)
         #expect(try Data(contentsOf: list) == Data("kaputt".utf8) && restarts == 1)
-        try fm.removeItem(at: list)                                      // fehlt: nichts anfassen
-        #expect(run([name]) == nil && restarts == 1)
+        try fm.removeItem(at: list)                                      // fehlt (macOS 26): nichts aufzuräumen, nichts anlegen
+        #expect(run([name]) == 0 && restarts == 1 && !fm.fileExists(atPath: list.path))
     }
 
     /// Ein gültiges Archiv mit unbekannter Klasse (z. B. ein neues Format) darf die App nicht abstürzen lassen.
@@ -175,8 +175,10 @@ struct SidebarTests {
         guard case .failure(let denied) = Sidebar.inspect(names: [], list: list) else { Issue.record("unreadable list passed"); return }
         #expect(denied.noAccess)
         try fm.removeItem(at: list)
-        guard case .failure(let missing) = Sidebar.inspect(names: [], list: list) else { Issue.record("missing list passed"); return }
-        #expect(!missing.noAccess)
+        // fehlt die Liste (macOS 26), gibt es nichts aufzuräumen – kein Fehler, keine Frage nach Festplattenvollzugriff
+        guard case .success(let missing) = Sidebar.inspect(names: [], list: list) else { Issue.record("missing list failed"); return }
+        #expect(missing == "no list file on this Mac – nothing to clean")
+        #expect(Sidebar.purge(names: [], list: list) == 0)
     }
 
     @Test func temporaryPlace() {

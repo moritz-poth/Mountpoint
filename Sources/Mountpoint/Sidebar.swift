@@ -213,6 +213,7 @@ enum Sidebar {
         let names = purgeNames(workspaceNames)
         let read: (data: Data, root: [String: Any], items: [[String: Any]])
         switch readList(list) {
+        case .failure(let problem) where problem.missing: return 0
         case .failure(let problem): Log.write("sidebar: \(problem.reason), not cleaned"); return nil
         case .success(let r): read = r
         }
@@ -265,6 +266,8 @@ enum Sidebar {
         let reason: String
         /// macOS gibt den Ordner nur Apps mit Festplattenvollzugriff frei (Datenschutz, getestet macOS 15)
         var noAccess = false
+        /// macOS 26 hat die Datei nicht und zeigt ausgeworfene Volumes nicht wieder an (Tester, 2026-11-14): nichts aufzuräumen
+        var missing = false
     }
 
     /// Ergebnis der Prüfung beim Start – für die Einstellungs-App (eigene App, eigene Rechte: sie kann es nicht selbst prüfen)
@@ -281,8 +284,10 @@ enum Sidebar {
     static func readList(_ list: URL = listFile) -> Result<(data: Data, root: [String: Any], items: [[String: Any]]), ListProblem> {
         let data: Data
         do { data = try Data(contentsOf: list) } catch {
-            let denied = (error as NSError).code == NSFileReadNoPermissionError
-            return .failure(ListProblem(reason: denied ? "no permission to read the list (Full Disk Access needed)" : "list file missing or not readable",
+            let code = (error as NSError).code
+            if code == NSFileReadNoSuchFileError { return .failure(ListProblem(reason: "no list file on this Mac – nothing to clean", missing: true)) }
+            let denied = code == NSFileReadNoPermissionError
+            return .failure(ListProblem(reason: denied ? "no permission to read the list (Full Disk Access needed)" : "list file not readable (error \(code))",
                                         noAccess: denied))
         }
         guard let u = try? NSKeyedUnarchiver(forReadingFrom: data) else { return .failure(ListProblem(reason: "list file not readable")) }
@@ -298,6 +303,7 @@ enum Sidebar {
     /// fremde Einträge erkennt? Ohne sie (anderes macOS) könnte das Aufräumen Einträge des Finders für eigene halten.
     static func inspect(names workspaceNames: Set<String>, list: URL = listFile) -> Result<String, ListProblem> {
         switch readList(list) {
+        case .failure(let problem) where problem.missing: return .success(problem.reason)
         case .failure(let problem): return .failure(problem)
         case .success(let r):
             let finders = r.items.filter {
