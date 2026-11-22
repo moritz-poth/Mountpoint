@@ -183,7 +183,7 @@ final class VolumeGuard {
                 ? loc("Soon this folder holds more than \(limit) files. We recommend starting a new folder now: quit Media Composer and rename this one, e.g. “1” to “1a”. The media stays online and Media Composer starts a new folder.")
                 : loc("We recommend no more than \(limit) files per folder in “Avid MediaFiles/MXF”. Quit Media Composer and rename the folder, e.g. “1” to “1a”: the media stays online and Media Composer starts a new folder."),
             // MediaFiles Check rebalanciert erst über der Grenze – bei der Vorwarnung kein Hinweis darauf
-            note: early ? nil : loc("We recommend rebalancing the folder with MediaFiles Check. You can find its GitHub repository at the following URL: [https://github.com/moritz-poth/mediafiles-check](https://github.com/moritz-poth/mediafiles-check)"),
+            note: early ? nil : loc("We recommend rebalancing the folder with MediaFiles Check. You can find its GitHub repository at the following URL: [https://github.com/moritz-poth/MediaFiles-Check](https://github.com/moritz-poth/MediaFiles-Check)"),
             dark: Store.shared.dark,
             showInFinder: { NSWorkspace.shared.selectFile(folder, inFileViewerRootedAtPath: "") },
             snooze: snoozeAction(key),

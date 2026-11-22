@@ -6,7 +6,7 @@ struct AboutView: View {
     /// mit „Fertig“-Knopf (im Panel); im Einstellungsfenster ohne
     var done: (() -> Void)? = nil
 
-    static let repo = URL(string: "https://github.com/moritz-poth/mountpoint")!
+    static let repo = URL(string: "https://github.com/moritz-poth/Mountpoint")!
     static let gpl = URL(string: "https://www.gnu.org/licenses/gpl-3.0.html")!
     static let coffee = URL(string: "https://buymeacoffee.com/moritzpoth")!
 

@@ -51,7 +51,7 @@ struct Release {
     /// "1.4.0" aus dem Tag "v1.4.0"
     var version: String { tag.hasPrefix("v") ? String(tag.dropFirst()) : tag }
 
-    static let releasesPage = URL(string: "https://github.com/moritz-poth/mountpoint/releases")!
+    static let releasesPage = URL(string: "https://github.com/moritz-poth/Mountpoint/releases")!
 
     /// Release page, but only on this project's GitHub – otherwise the list of releases.
     var safePage: URL { page.absoluteString.hasPrefix(Release.releasesPage.absoluteString + "/") ? page : Release.releasesPage }
@@ -93,7 +93,7 @@ final class Updater: ObservableObject {
     /// Public half of the update key (`swift scripts/update-key.swift public`). Only zips signed with it are installed:
     /// the codesign check alone proves the app is intact, not who made it (ad-hoc signature).
     nonisolated static let publicKey = "zDauUuX5/5aDuNcfbCFsho7D8dsjhAf5BVBdNRLJhxc="
-    static let api = URL(string: "https://api.github.com/repos/moritz-poth/mountpoint/releases?per_page=20")!
+    static let api = URL(string: "https://api.github.com/repos/moritz-poth/Mountpoint/releases?per_page=20")!
     private var timer: Timer?
 
     /// Checks shortly after launch and then every 6 hours, quietly.

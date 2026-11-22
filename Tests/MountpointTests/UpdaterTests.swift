@@ -37,9 +37,9 @@ struct UpdaterTests {
         #expect(m?.tag == "v1.0.0-beta.10" && m?.manual == true && m?.signature == nil)
         // nur Links auf dieses Projekt werden geöffnet
         #expect(m?.safePage == Release.releasesPage)
-        let own = Release(tag: "v1", page: URL(string: "https://github.com/moritz-poth/mountpoint/releases/tag/v1")!, zip: Release.releasesPage, signature: nil, manual: true)
+        let own = Release(tag: "v1", page: URL(string: "https://github.com/moritz-poth/Mountpoint/releases/tag/v1")!, zip: Release.releasesPage, signature: nil, manual: true)
         #expect(own.safePage == own.page)
-        let evil = Release(tag: "v1", page: URL(string: "https://github.com/moritz-poth/mountpoint/releases.evil.com/x")!, zip: Release.releasesPage, signature: nil, manual: true)
+        let evil = Release(tag: "v1", page: URL(string: "https://github.com/moritz-poth/Mountpoint/releases.evil.com/x")!, zip: Release.releasesPage, signature: nil, manual: true)
         #expect(evil.safePage == Release.releasesPage)
         #expect(newestRelease(fromJSON: Data("{\"message\":\"rate limit\"}".utf8)) == nil)
     }
@@ -111,7 +111,7 @@ struct UpdaterTests {
 
     @Test func liveGitHubHasAParsableRelease() async throws {
         guard ProcessInfo.processInfo.environment["MOUNTPOINT_IT"] == "1" else { return }
-        let (data, _) = try await URLSession.shared.data(from: URL(string: "https://api.github.com/repos/moritz-poth/mountpoint/releases?per_page=20")!)
+        let (data, _) = try await URLSession.shared.data(from: URL(string: "https://api.github.com/repos/moritz-poth/Mountpoint/releases?per_page=20")!)
         let r = try #require(newestRelease(fromJSON: data, requireSignature: false))
         #expect(AppVersion(r.tag)! >= AppVersion("v1.0.0-beta.7")!)
     }

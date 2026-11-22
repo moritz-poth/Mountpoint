@@ -176,7 +176,7 @@
 "Files per folder" = "Dateien pro Ordner";
 "“%@” on “%@” holds %lld files" = "„%@“ auf „%@“ enthält %lld Dateien";
 "We recommend no more than %@ files per folder in “Avid MediaFiles/MXF”. Quit Media Composer and rename the folder, e.g. “1” to “1a”: the media stays online and Media Composer starts a new folder." = "Wir empfehlen höchstens %@ Dateien pro Ordner in „Avid MediaFiles/MXF“. Beende Media Composer und benenne den Ordner um, z. B. „1“ in „1a“: Die Medien bleiben online, und Media Composer legt einen neuen Ordner an.";
-"We recommend rebalancing the folder with MediaFiles Check. You can find its GitHub repository at the following URL: [https://github.com/moritz-poth/mediafiles-check](https://github.com/moritz-poth/mediafiles-check)" = "Wir empfehlen, den Ordner mit MediaFiles Check neu aufzuteilen (Rebalancing). Das GitHub-Repository findest du unter der folgenden URL: [https://github.com/moritz-poth/mediafiles-check](https://github.com/moritz-poth/mediafiles-check)";
+"We recommend rebalancing the folder with MediaFiles Check. You can find its GitHub repository at the following URL: [https://github.com/moritz-poth/MediaFiles-Check](https://github.com/moritz-poth/MediaFiles-Check)" = "Wir empfehlen, den Ordner mit MediaFiles Check neu aufzuteilen (Rebalancing). Das GitHub-Repository findest du unter der folgenden URL: [https://github.com/moritz-poth/MediaFiles-Check](https://github.com/moritz-poth/MediaFiles-Check)";
 "Mounted" = "Eingehängt";
 "Not mounted" = "Nicht eingehängt";
 "Partly mounted or problem" = "Teilweise eingehängt oder Problem";

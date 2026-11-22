@@ -30,7 +30,7 @@ hourly limit per IP and app), `scripts/soak-test.py` (overnight test tool).
   §3–§4.
 - **Guard** (`VolumeGuard`) – watches folders and shows alerts; `VolumeGuard.shared` is Mountpoint's real guard. The
   **self-test** (Settings → Support → "Run self-test…") creates its own guard instances on a temporary disk image.
-- **MediaFiles Check** – a sibling app by the same author (https://github.com/moritz-poth/mediafiles-check). Its
+- **MediaFiles Check** – a sibling app by the same author (https://github.com/moritz-poth/MediaFiles-Check). Its
   **rebalancing** moves media files from over-full MXF folders into new folders and fills each folder up to exactly a
   user-set limit (default 5000), counting all visible files including the two database files.
 - **Finder sidebar entries** – with the setting "Show in Finder sidebar" (`Store.sidebar`, default on) Mountpoint adds

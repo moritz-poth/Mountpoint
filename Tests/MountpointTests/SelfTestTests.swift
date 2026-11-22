@@ -19,9 +19,9 @@ struct SelfTestTests {
 
     @Test func prereleasesOnlyWhenWanted() {
         let json = """
-        [{"tag_name":"v1.1.0-beta.1","html_url":"https://github.com/moritz-poth/mountpoint/releases/tag/v1.1.0-beta.1","draft":false,"prerelease":true,
+        [{"tag_name":"v1.1.0-beta.1","html_url":"https://github.com/moritz-poth/Mountpoint/releases/tag/v1.1.0-beta.1","draft":false,"prerelease":true,
           "assets":[{"name":"Mountpoint-1.1.0-beta.1.zip","browser_download_url":"https://x/b.zip"},{"name":"Mountpoint-1.1.0-beta.1.zip.sig","browser_download_url":"https://x/b.sig"}]},
-         {"tag_name":"v1.0.1","html_url":"https://github.com/moritz-poth/mountpoint/releases/tag/v1.0.1","draft":false,"prerelease":false,
+         {"tag_name":"v1.0.1","html_url":"https://github.com/moritz-poth/Mountpoint/releases/tag/v1.0.1","draft":false,"prerelease":false,
           "assets":[{"name":"Mountpoint-1.0.1.zip","browser_download_url":"https://x/a.zip"},{"name":"Mountpoint-1.0.1.zip.sig","browser_download_url":"https://x/a.sig"}]}]
         """.data(using: .utf8)!
         #expect(newestRelease(fromJSON: json)?.tag == "v1.0.1")
