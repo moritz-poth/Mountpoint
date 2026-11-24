@@ -118,7 +118,8 @@ function validate(r) {
   return null;
 }
 
-// Text from a report is untrusted: invisible/bidi/tag characters removed, never rendered as Markdown (Fona review M12).
+// Text from a report is untrusted: invisible/bidi/tag characters removed, never rendered as Markdown (Fona review M12):
+// free text goes into code blocks, short values into inline code (`esc` removes backticks, so they cannot break out).
 function clean(s) {
   return String(s).replace(/[\u200B-\u200F\u202A-\u202E\u2060-\u2064\u2066-\u2069\u2028\u2029\uFEFF]|[\u{E0000}-\u{E007F}]/gu, "");
 }
@@ -155,16 +156,16 @@ function body(r, path) {
   const lines = [];
   if (r.kind === "problem") {
     lines.push("### Description", "", codeBlock(r.note.trim()), "");
-    if (r.contact) lines.push(`**Contact:** ${esc(r.contact)}`, "");
+    if (r.contact) lines.push(`**Contact:** \`${esc(r.contact)}\``, "");
   }
   const sys = Object.entries(r.system).sort(([a], [b]) => a.localeCompare(b));
   if (sys.length) {
-    lines.push(r.product === "schnittpunkt" ? "### Room" : "### System", "", "| | |", "|---|---|", ...sys.map(([k, v]) => `| ${esc(k)} | ${esc(v)} |`), "");
+    lines.push(r.product === "schnittpunkt" ? "### Room" : "### System", "", "| | |", "|---|---|", ...sys.map(([k, v]) => `| ${esc(k)} | \`${esc(v)}\` |`), "");
   }
   if (r.results.length) {
     const icon = { pass: "✅", fail: "❌", skip: "➖" };
     lines.push(`### Results (${r.durationSeconds} s)`, "", "| | Test | Detail | s |", "|---|---|---|---|",
-      ...r.results.map((c) => `| ${icon[c.status]} | ${esc(c.id)} | ${esc(c.detail).slice(0, 300)} | ${c.seconds} |`), "");
+      ...r.results.map((c) => `| ${icon[c.status]} | `${esc(c.id)}` | `${esc(c.detail).slice(0, 300)}` | ${c.seconds} |`), "");
   }
   lines.push(`Full report: \`${path}\` (app ${esc(r.app)}, build ${esc(r.build)}, ${esc(r.date)})`);
   return lines.join("\n").slice(0, 60000);
