@@ -165,7 +165,7 @@ function body(r, path) {
   if (r.results.length) {
     const icon = { pass: "✅", fail: "❌", skip: "➖" };
     lines.push(`### Results (${r.durationSeconds} s)`, "", "| | Test | Detail | s |", "|---|---|---|---|",
-      ...r.results.map((c) => `| ${icon[c.status]} | `${esc(c.id)}` | `${esc(c.detail).slice(0, 300)}` | ${c.seconds} |`), "");
+      ...r.results.map((c) => `| ${icon[c.status]} | \`${esc(c.id)}\` | \`${esc(c.detail).slice(0, 300)}\` | ${c.seconds} |`), "");
   }
   lines.push(`Full report: \`${path}\` (app ${esc(r.app)}, build ${esc(r.build)}, ${esc(r.date)})`);
   return lines.join("\n").slice(0, 60000);
