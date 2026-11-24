@@ -31,10 +31,27 @@ export class Limits extends DurableObject {
   }
 }
 
+// Web pages that may send reports from a browser (Schnittpunkt's room form). Apps send without an Origin.
+const WEB_ORIGINS = ["https://moritz-poth.github.io"];
+
 export default {
   async fetch(request, env) {
+    const res = await handle(request, env);
+    const origin = request.headers.get("origin");
+    if (WEB_ORIGINS.includes(origin)) {
+      res.headers.set("access-control-allow-origin", origin);
+      res.headers.set("vary", "origin");
+    }
+    return res;
+  },
+};
+
+async function handle(request, env) {
     const url = new URL(request.url);
     if (url.pathname !== "/report") return json({ error: "not found" }, 404);
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: { "access-control-allow-methods": "POST", "access-control-allow-headers": "content-type", "access-control-max-age": "86400" } });
+    }
     if (request.method !== "POST") return json({ error: "method not allowed" }, 405);
     if (!(request.headers.get("content-type") || "").startsWith("application/json")) return json({ error: "json only" }, 415);
     const length = Number(request.headers.get("content-length") || "0");
@@ -48,6 +65,8 @@ export default {
     if (problem) return json({ error: problem }, 400);
     const repo = JSON.parse(env.REPOS)[report.product || "mountpoint"];
     if (!repo) return json({ error: "unknown product" }, 400);
+    // Honeypot: a field people never see; bots that fill it get a normal answer and nothing is stored.
+    if (report.system.website) return json({ id: "0" });
 
     // Limits: one Durable Object checks and counts in a single step, so parallel or far-apart requests cannot all pass
     // raw IPs are never stored: the rate-limit key is a salted hash (Fona review M12)
@@ -55,7 +74,8 @@ export default {
     const now = new Date();
     // per app: a tester who tries several apps in one hour must not lock himself out of the next one
     const hourKey = `ip:${ip}:${report.product || "mountpoint"}:${now.toISOString().slice(0, 13)}`;
-    const dayKey = `day:${now.toISOString().slice(0, 10)}`;
+    // per app as well, so a flood from the public web form cannot use up the apps' daily quota
+    const dayKey = `day:${now.toISOString().slice(0, 10)}:${report.product || "mountpoint"}`;
     const limited = await env.LIMITS.get(env.LIMITS.idFromName("limits")).take(hourKey, dayKey);
     if (limited) return json({ error: limited }, 429);
 
@@ -75,8 +95,7 @@ export default {
     } catch (e) {
       return json({ error: "could not store report" }, 502);
     }
-  },
-};
+}
 
 function validate(r) {
   if (!r || typeof r !== "object" || Array.isArray(r)) return "not an object";
@@ -114,6 +133,10 @@ async function hashIP(ip, salt) {
 }
 
 function title(r) {
+  if (r.product === "schnittpunkt") {
+    const s = r.system;
+    return `[room] ${clean(s.city || "")} · ${clean(s.type || "")} · ${clean(s.room || r.note.trim().split("\n")[0]).slice(0, 70)}`;
+  }
   const os = (r.system.macOS || "").replace(/^Version /, "macOS ").replace(/ \(Build.*\)/, "");
   if (r.kind === "problem") return `[problem] ${r.app} · ${os || "no system info"} · ${clean(r.note.trim().split("\n")[0]).slice(0, 60)}`;
   const pass = r.results.filter((c) => c.status === "pass").length;
@@ -136,7 +159,7 @@ function body(r, path) {
   }
   const sys = Object.entries(r.system).sort(([a], [b]) => a.localeCompare(b));
   if (sys.length) {
-    lines.push("### System", "", "| | |", "|---|---|", ...sys.map(([k, v]) => `| ${esc(k)} | ${esc(v)} |`), "");
+    lines.push(r.product === "schnittpunkt" ? "### Room" : "### System", "", "| | |", "|---|---|", ...sys.map(([k, v]) => `| ${esc(k)} | ${esc(v)} |`), "");
   }
   if (r.results.length) {
     const icon = { pass: "✅", fail: "❌", skip: "➖" };

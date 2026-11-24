@@ -6,8 +6,8 @@ main = "src/index.js"
 compatibility_date = "2026-10-01"
 
 [vars]
-REPOS = '{"mountpoint": "moritz-poth/MountpointReports", "mediafiles-check": "moritz-poth/MediaFiles-Check-Reports", "fona": "moritz-poth/FonaReports"}'
-MAX_PER_DAY = "50"      # Berichte pro Tag insgesamt
+REPOS = '{"mountpoint": "moritz-poth/MountpointReports", "mediafiles-check": "moritz-poth/MediaFiles-Check-Reports", "fona": "moritz-poth/FonaReports", "schnittpunkt": "moritz-poth/SchnittpunktReports"}'
+MAX_PER_DAY = "50"      # Berichte pro Tag und App
 MAX_PER_HOUR_IP = "10"  # Berichte pro Stunde, Absender und App (5 für alle Apps zusammen reichte beim Testen nicht)
 
 # Zähler für die Limits: Durable Object `Limits` (src/index.js), prüft und zählt in einem Schritt – mit KV kamen
